@@ -8,7 +8,7 @@ type CategorySquareTypes = {
 
 const CategorySquare: React.FC<CategorySquareTypes> = ({ category, color, on_press }) => {
   return (
-    <Pressable onPress={on_press} className={`w-48 h-48 justify-center items-center rounded-2xl m-4`}
+    <Pressable onPress={on_press} className={`w-48 h-48 justify-center items-center rounded-2xl`}
     style={{backgroundColor: color}}>
       <Text className="text-[#000000] font-bold text-center">
         {category}
