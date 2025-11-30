@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import { MEALS } from "data/dummy-data";
 import { useShowMeals } from "hooks/useShowMeals";
-import { ScrollView, Image, View, Text, StyleSheet } from "react-native";
+import { ScrollView, Image, View, Text, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import {Ionicons} from '@expo/vector-icons'
+import { useFavoriteMeals } from "hooks/useFavoriteMeals";
 
 type MealDescriptionScreenTypes = {
   image: ''
@@ -19,6 +22,9 @@ type MealDescriptionScreenTypes = {
 
 const MealDescriptionScreen = () => {
   const { meal_id } = useShowMeals()
+  const { favorite_meals, set_favorite_meals }  = useFavoriteMeals()
+  const [favorited, set_favorited] = useState(false)
+  const navigation = useNavigation()
 
   const [ meal_info, set_meal_info] = useState<MealDescriptionScreenTypes>({
     image: '',
@@ -33,6 +39,29 @@ const MealDescriptionScreen = () => {
     is_vegetarian: false,
     is_lactose_free: false
   })
+
+    const toggleFavorite = () => {
+    // Toggle UI state
+    set_favorited(prev => !prev)
+
+    // Add to zustand
+    set_favorite_meals(meal_id)
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={toggleFavorite} style={{ marginRight: 12 }}>
+          {favorited ? (
+            <Ionicons name="star" size={24} color="#fff" />
+          ) : (
+            <Ionicons name="star-outline" size={24} color="#fff" />
+          )}
+        </Pressable>
+      ),
+    })
+  }, [navigation, favorited])
+
   
   useEffect(() =>{
     const meal = MEALS.filter(meal => meal.id === meal_id )
